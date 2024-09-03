@@ -580,7 +580,7 @@ TIME_ZONE_CHOICES = (
 
 ACCOUNT_STATUS_CHOICES = (
     ('Active', 'Active'),
-    ('InActive', 'InActive'),
+    ('Inactive', 'Inactive'),
     ('Blocked', 'Blocked'),
 )
 
