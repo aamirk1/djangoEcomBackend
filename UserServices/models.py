@@ -504,12 +504,86 @@ DEPARTMENT_CHOICES = (
     ('Operations', 'Operations'),
 )
 
+DESIGNATION_CHOICES = (
+    ('CEO', 'CHIEF EXECUTIVE OFFICER'),
+    ('CFO', 'CHIEF FINANCIAL OFFICER'),
+    ('COO', 'CHIEF OPERATING OFFICER'),
+    ('CTO', 'CHIEF TECHNOLOGY OFFICER'),
+    ('CMO', 'CHIEF MARKETING OFFICER'),
+    ('CIO', 'CHIEF INFORMATION OFFICER'),
+    ('CHRO', 'CHIEF HUMAN RESOURCES OFFICER'),
+    ('CSO', 'CHIEF STRATEGY OFFICER'),
+    ('CDO', 'CHIEF DATA OFFICER'),
+    ('CPO', 'CHIEF PRODUCT OFFICER'),
+    ('CAO', 'CHIEF ADMINISTRATIVE OFFICER'),
+    ('CLO', 'CHIEF LEGAL OFFICER'),
+    ('CCO', 'CHIEF COMMERCIAL OFFICER'),
+    ('VP', 'VICE PRESIDENT'),
+    ('SVP', 'SENIOR VICE PRESIDENT'),
+    ('EVP', 'EXECUTIVE VICE PRESIDENT'),
+    ('DIRECTOR', 'DIRECTOR'),
+    ('MANAGER', 'MANAGER'),
+    ('ASSISTANT MANAGER', 'ASSISTANT MANAGER'),
+    ('SUPERVISOR', 'SUPERVISOR'),
+    ('TEAM LEAD', 'TEAM LEAD'),
+    ('SENIOR ANALYST', 'SENIOR ANALYST'),
+    ('ANALYST', 'ANALYST'),
+    ('ASSOCIATE', 'ASSOCIATE'),
+    ('COORDINATOR', 'COORDINATOR'),
+    ('ADMINISTRATOR', 'ADMINISTRATOR'),
+    ('OFFICER', 'OFFICER'),
+    ('CLERK', 'CLERK'),
+    ('ASSISTANT', 'ASSISTANT'),
+    ('INTERNSHIP', 'INTERNSHIP'),
+    ('EXECUTIVE', 'EXECUTIVE'),
+    ('CONSULTANT', 'CONSULTANT'),
+    ('ADVISOR', 'ADVISOR'),
+    ('SPECIALIST', 'SPECIALIST'),
+    ('ENGINEER', 'ENGINEER'),
+    ('TECHNICIAN', 'TECHNICIAN'),
+    ('ARCHITECT', 'ARCHITECT'),
+    ('DEVELOPER', 'DEVELOPER'),
+    ('DESIGNER', 'DESIGNER'),
+    ('MARKETER', 'MARKETER'),
+    ('SALES REP', 'SALES REPRESENTATIVE'),
+    ('CUSTOMER SERVICE', 'CUSTOMER SERVICE'),
+)
+
+TIME_ZONE_CHOICES = (
+    ('UTC-12:00', 'UTC-12:00 (Baker Island Time)'),
+    ('UTC-11:00', 'UTC-11:00 (Niue Time, Samoa Time)'),
+    ('UTC-10:00', 'UTC-10:00 (Hawaii-Aleutian Standard Time)'),
+    ('UTC-09:00', 'UTC-09:00 (Alaska Standard Time)'),
+    ('UTC-08:00', 'UTC-08:00 (Pacific Standard Time)'),
+    ('UTC-07:00', 'UTC-07:00 (Mountain Standard Time)'),
+    ('UTC-06:00', 'UTC-06:00 (Central Standard Time)'),
+    ('UTC-05:00', 'UTC-05:00 (Eastern Standard Time)'),
+    ('UTC-04:00', 'UTC-04:00 (Atlantic Standard Time)'),
+    ('UTC-03:00', 'UTC-03:00 (Argentina Time, Brasilia Time)'),
+    ('UTC-02:00', 'UTC-02:00 (South Georgia Time)'),
+    ('UTC-01:00', 'UTC-01:00 (Azores Time, Cape Verde Time)'),
+    ('UTC±00:00', 'UTC±00:00 (Greenwich Mean Time)'),
+    ('UTC+01:00', 'UTC+01:00 (Central European Time)'),
+    ('UTC+02:00', 'UTC+02:00 (Eastern European Time)'),
+    ('UTC+03:00', 'UTC+03:00 (Moscow Time, East Africa Time)'),
+    ('UTC+04:00', 'UTC+04:00 (Azerbaijan Time, Samara Time)'),
+    ('UTC+05:00', 'UTC+05:00 (Pakistan Standard Time, Yekaterinburg Time)'),
+    ('UTC+06:00', 'UTC+06:00 (Bangladesh Standard Time, Omsk Time)'),
+    ('UTC+07:00', 'UTC+07:00 (Indochina Time, Krasnoyarsk Time)'),
+    ('UTC+08:00', 'UTC+08:00 (China Standard Time, Singapore Time)'),
+    ('UTC+09:00', 'UTC+09:00 (Japan Standard Time, Korea Standard Time)'),
+    ('UTC+10:00', 'UTC+10:00 (Australian Eastern Standard Time, Vladivostok Time)'),
+    ('UTC+11:00', 'UTC+11:00 (Solomon Islands Time, Magadan Time)'),
+    ('UTC+12:00', 'UTC+12:00 (Fiji Time, Kamchatka Time)'),
+)
+
 
 ACCOUNT_STATUS_CHOICES = (
     ('Active', 'Active'),
     ('InActive', 'InActive'),
     ('Blocked', 'Blocked'),
 )
+
 class Users(AbstractUser):
     name = models.CharField(max_length=100, blank=True, null=True)
     email = models.EmailField(unique=True)
@@ -529,3 +603,8 @@ class Users(AbstractUser):
     additional_details = models.JSONField()(blank=True, null=True)
     language = models.CharField(max_length=50, default="English", choices=LANGUAGE_CHOICES, blank=True, null=True)
     department = models.CharField(max_length=50, blank=True, null=True, choices=DEPARTMENT_CHOICES)
+    designation = models.CharField(max_length=50, blank=True, null=True, choices=DESIGNATION_CHOICES)
+    time_zone = models.CharField(max_length=50, blank=True, null=True, choices=TIME_ZONE_CHOICES)
+    last_login = models.DateTimeField(blank=True, null=True)
+    last_device = models.CharField(max_length=100, blank=True, null=True)
+    
