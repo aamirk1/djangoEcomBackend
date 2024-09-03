@@ -607,4 +607,6 @@ class Users(AbstractUser):
     time_zone = models.CharField(max_length=50, blank=True, null=True, choices=TIME_ZONE_CHOICES)
     last_login = models.DateTimeField(blank=True, null=True)
     last_device = models.CharField(max_length=100, blank=True, null=True)
-    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
