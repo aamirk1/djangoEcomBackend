@@ -483,14 +483,14 @@ LANGUAGE_CHOICES = (
 )
 
 ROLE_CHOICES = (
-    ('User', 'User'),
     ('Admin', 'Admin'),
-    ('SuperAdmin', 'SuperAdmin'),
+    ('User', 'User'),
+    ('Supplier', 'Supplier'),
+    ('Customer', 'Customer'),
+    ('Others', 'Others'),
     ('Moderator', 'Moderator'),
     ('Manager', 'Manager'),
     ('Employee', 'Employee'),
-    ('Customer', 'Customer'),
-    ('Supplier', 'Supplier'),
     ('Staff', 'Staff'),
 
 )
@@ -500,7 +500,22 @@ DEPARTMENT_CHOICES = (
     ('HR', 'HR'),
     ('Sales', 'Sales'),
     ('Marketing', 'Marketing'),
+    ('Production', 'Production'),
     ('Finance', 'Finance'),
+    ('Quality Control', 'Quality Control'),
+    ('Logistics', 'Logistics'),
+    ('Warehouse', 'Warehouse'),
+    ('Customer Service', 'Customer Service'),
+    ('R&D', 'R&D'),
+    ('Legal', 'Legal'),
+    ('Admin', 'Admin'),
+    ('Security', 'Security'),
+    ('House Keeping', 'House Keeping'),
+    ('Maintenance', 'Maintenance'),
+    ('Engineering', 'Engineering'),
+    ('Design', 'Design'),
+    ('Testing', 'Testing'),
+    ('Training', 'Training'),
     ('Operations', 'Operations'),
 )
 
@@ -566,15 +581,25 @@ TIME_ZONE_CHOICES = (
     ('UTC+01:00', 'UTC+01:00 (Central European Time)'),
     ('UTC+02:00', 'UTC+02:00 (Eastern European Time)'),
     ('UTC+03:00', 'UTC+03:00 (Moscow Time, East Africa Time)'),
+    ('UTC+03:30', 'UTC+03:30 (Iran Standard Time)'),
     ('UTC+04:00', 'UTC+04:00 (Azerbaijan Time, Samara Time)'),
+    ('UTC+04:30', 'UTC+04:30 (Afghanistan Time)'),
     ('UTC+05:00', 'UTC+05:00 (Pakistan Standard Time, Yekaterinburg Time)'),
+    ('UTC+05:30', 'UTC+05:30 (Indian Standard Time, Sri Lanka Time)'),
+    ('UTC+05:45', 'UTC+05:45 (Nepal Time)'),
     ('UTC+06:00', 'UTC+06:00 (Bangladesh Standard Time, Omsk Time)'),
+    ('UTC+06:30', 'UTC+06:30 (Cocos Islands Time, Myanmar Time)'),
     ('UTC+07:00', 'UTC+07:00 (Indochina Time, Krasnoyarsk Time)'),
     ('UTC+08:00', 'UTC+08:00 (China Standard Time, Singapore Time)'),
+    ('UTC+08:45', 'UTC+08:45 (Australian Central Western Standard Time)'),
     ('UTC+09:00', 'UTC+09:00 (Japan Standard Time, Korea Standard Time)'),
+    ('UTC+09:30', 'UTC+09:30 (Australian Central Standard Time)'),
     ('UTC+10:00', 'UTC+10:00 (Australian Eastern Standard Time, Vladivostok Time)'),
+    ('UTC+10:30', 'UTC+10:30 (Lord Howe Standard Time)'),
     ('UTC+11:00', 'UTC+11:00 (Solomon Islands Time, Magadan Time)'),
     ('UTC+12:00', 'UTC+12:00 (Fiji Time, Kamchatka Time)'),
+    ('UTC+13:00', 'UTC+13:00 (Tonga Time)'),
+    ('UTC+14:00', 'UTC+14:00 (Line Islands Time)'),
 )
 
 
@@ -582,6 +607,20 @@ ACCOUNT_STATUS_CHOICES = (
     ('Active', 'Active'),
     ('Inactive', 'Inactive'),
     ('Blocked', 'Blocked'),
+)
+
+ADDRESS_TYPE_CHOICES = (
+    ('Home', 'Home'),
+    ('Office', 'Office'),
+    ('Other', 'Other'),
+)
+
+PLAN_TYPE_CHOICES = (
+    ('Free', 'Free'),
+    ('Basic', 'Basic'),
+    ('Standard', 'Standard'),
+    ('Premium', 'Premium'),
+    ('Enterprise', 'Enterprise'),
 )
 
 class Users(AbstractUser):
@@ -599,14 +638,66 @@ class Users(AbstractUser):
     dob = models.DateField(blank=True, null=True)
     username = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=50)
-    social_media_links = models.JSONField()(blank=True, null=True)
-    additional_details = models.JSONField()(blank=True, null=True)
+    social_media_links = models.JSONField(blank=True, null=True)
+    additional_details = models.JSONField(blank=True, null=True)
     language = models.CharField(max_length=50, default="English", choices=LANGUAGE_CHOICES, blank=True, null=True)
     department = models.CharField(max_length=50, blank=True, null=True, choices=DEPARTMENT_CHOICES)
     designation = models.CharField(max_length=50, blank=True, null=True, choices=DESIGNATION_CHOICES)
     time_zone = models.CharField(max_length=50, blank=True, null=True, choices=TIME_ZONE_CHOICES)
     last_login = models.DateTimeField(blank=True, null=True)
     last_device = models.CharField(max_length=100, blank=True, null=True)
+    last_ip = models.GenericIPAddressField(max_length=100, blank=True, null=True)
+    currency = models.CharField(max_length=50, blank=True, null=True, choices=CURRENCY_CHOICES)
+    domain_user_id = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+    domain_name = models.CharField(max_length=100, blank=True, null=True)
+    plan_type = models.CharField(max_length=50, blank=True, null=True, choices=PLAN_TYPE_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+class UserShippingAddress(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+    address_type = models.CharField(max_length=50, blank=True, null=True, choices=ADDRESS_TYPE_CHOICES)
+    address = models.TextField()
+    city = models.CharField(max_length=50, blank=True, null=True)
+    state = models.CharField(max_length=50, blank=True, null=True)
+    pincode = models.CharField(max_length=10, blank=True, null=True)
+    country = models.CharField(max_length=50, default="INDIA", choices=COUNTRY_CHOICES, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class Modules(models.Model):
+    id = models.AutoField(primary_key=True)
+    module_name = models.CharField(max_length=100, unique=True)
+    module_icon = models.TextField()
+    is_menu = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
+    module_url = models.TextField()
+    parent_id = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+    display_order = models.IntegerField(blank=True, null=True)
+    module_description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class UserPermissions(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+    module = models.ForeignKey(Modules, on_delete=models.CASCADE)
+    is_view = models.BooleanField(default=False)
+    is_add = models.BooleanField(default=False)
+    is_edit = models.BooleanField(default=False)
+    is_delete = models.BooleanField(default=False)
+    domain_user_id = models.CharField(max_length=100, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class ActivityLogs(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+    activity = models.TextField()
+    activity_type = models.CharField(max_length=50, blank=True, null=True)
+    activity_date = models.DateTimeField(auto_now_add=True)
+    activity_ip = models.GenericIPAddressField(max_length=100, blank=True, null=True)
+    domain_user_id = models.CharField(max_length=100, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
